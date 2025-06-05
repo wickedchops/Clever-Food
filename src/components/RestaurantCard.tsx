@@ -14,6 +14,16 @@ const RestaurantCard = ({ restaurant, isCheapest }: RestaurantCardProps) => {
     'Deliveroo': 'bg-cyan-500 text-white'
   };
 
+  const platformUrls = {
+    'Uber Eats': 'https://www.ubereats.com',
+    'Just Eat': 'https://www.just-eat.co.uk',
+    'Deliveroo': 'https://deliveroo.co.uk'
+  };
+
+  const handleOrderClick = () => {
+    window.open(platformUrls[restaurant.platform], '_blank');
+  };
+
   return (
     <div className={`relative bg-white rounded-2xl shadow-lg overflow-hidden border-2 transition-all duration-200 hover:shadow-xl hover:scale-105 ${
       isCheapest ? 'border-green-500 ring-2 ring-green-200' : 'border-gray-200'
@@ -61,11 +71,14 @@ const RestaurantCard = ({ restaurant, isCheapest }: RestaurantCardProps) => {
         </div>
 
         {/* Order Button */}
-        <button className={`w-full mt-4 py-3 px-4 rounded-xl font-semibold transition-colors ${
-          isCheapest
-            ? 'bg-green-600 hover:bg-green-700 text-white'
-            : 'bg-gray-800 hover:bg-gray-900 text-white'
-        }`}>
+        <button 
+          onClick={handleOrderClick}
+          className={`w-full mt-4 py-3 px-4 rounded-xl font-semibold transition-colors ${
+            isCheapest
+              ? 'bg-green-600 hover:bg-green-700 text-white'
+              : 'bg-gray-800 hover:bg-gray-900 text-white'
+          }`}
+        >
           Order from {restaurant.platform}
         </button>
       </div>
