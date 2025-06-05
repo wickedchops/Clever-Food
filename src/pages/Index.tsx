@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import SearchForm from '@/components/SearchForm';
 import RestaurantResults from '@/components/RestaurantResults';
+import ApiSettings from '@/components/ApiSettings';
 import { searchDeliveryApps } from '@/services/deliveryService';
 import { Restaurant } from '@/types/restaurant';
 
@@ -51,6 +52,9 @@ const Index = () => {
           </div>
         )}
       </div>
+
+      {/* API Settings */}
+      <ApiSettings />
     </div>
   );
 };

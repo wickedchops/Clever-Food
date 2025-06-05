@@ -8,4 +8,5 @@ export interface Restaurant {
   deliveryTime: number;
   rating: number;
   platform: 'Uber Eats' | 'Just Eat' | 'Deliveroo';
+  restaurantUrl?: string;
 }

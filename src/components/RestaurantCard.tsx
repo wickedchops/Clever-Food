@@ -14,14 +14,16 @@ const RestaurantCard = ({ restaurant, isCheapest }: RestaurantCardProps) => {
     'Deliveroo': 'bg-cyan-500 text-white'
   };
 
-  const platformUrls = {
+  const defaultPlatformUrls = {
     'Uber Eats': 'https://www.ubereats.com',
     'Just Eat': 'https://www.just-eat.co.uk',
     'Deliveroo': 'https://deliveroo.co.uk'
   };
 
   const handleOrderClick = () => {
-    window.open(platformUrls[restaurant.platform], '_blank');
+    // Use the restaurant's specific URL if available, otherwise fall back to platform homepage
+    const url = restaurant.restaurantUrl || defaultPlatformUrls[restaurant.platform];
+    window.open(url, '_blank');
   };
 
   return (
@@ -45,7 +47,7 @@ const RestaurantCard = ({ restaurant, isCheapest }: RestaurantCardProps) => {
           </span>
           <div className="flex items-center gap-1 text-gray-600">
             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm">{restaurant.rating}</span>
+            <span className="text-sm">{restaurant.rating.toFixed(1)}</span>
           </div>
         </div>
 
