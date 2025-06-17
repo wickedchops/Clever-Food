@@ -6,13 +6,13 @@ export const searchDeliveryApps = async (food: string, postcode: string): Promis
   console.log(`Searching for "${food}" in postcode "${postcode}"`);
   
   try {
-    // Initialize the API service and let it load the API key from localStorage
+    // Initialize the API service
     const apiService = new DeliveryApiService();
     
-    // Use the API service to fetch real data
+    // Generate realistic restaurant data
     const results = await apiService.searchAllPlatforms(food, postcode);
     
-    // Add some slight randomization to make it feel more realistic
+    // Add some slight randomization to make pricing feel more realistic
     const randomizedResults = results.map(restaurant => ({
       ...restaurant,
       price: Math.max(8, restaurant.price + (Math.random() - 0.5) * 2), // ±£1 variation, minimum £8
@@ -20,11 +20,12 @@ export const searchDeliveryApps = async (food: string, postcode: string): Promis
       deliveryFee: Math.max(0.99, restaurant.deliveryFee + (Math.random() - 0.5) * 0.5) // Slight variation but minimum £0.99
     }));
 
+    console.log(`Returning ${randomizedResults.length} restaurant options`);
     return randomizedResults.sort((a, b) => a.price - b.price);
   } catch (error) {
-    console.error('API search failed, using fallback:', error);
+    console.error('Restaurant search failed:', error);
     
-    // If all else fails, return a simple fallback
+    // Simple fallback
     return [
       {
         id: 'fallback-1',
