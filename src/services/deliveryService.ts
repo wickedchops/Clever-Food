@@ -2,15 +2,14 @@
 import { Restaurant } from '@/types/restaurant';
 import { DeliveryApiService } from './apiService';
 
-// Initialize the API service
-// In production, you would pass a real Google Places API key
-const apiService = new DeliveryApiService();
-
 export const searchDeliveryApps = async (food: string, postcode: string): Promise<Restaurant[]> => {
   console.log(`Searching for "${food}" in postcode "${postcode}"`);
   
   try {
-    // Use the new API service to fetch real data
+    // Initialize the API service and let it load the API key from localStorage
+    const apiService = new DeliveryApiService();
+    
+    // Use the API service to fetch real data
     const results = await apiService.searchAllPlatforms(food, postcode);
     
     // Add some slight randomization to make it feel more realistic

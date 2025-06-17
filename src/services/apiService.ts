@@ -6,7 +6,8 @@ class GooglePlacesService {
   private apiKey: string = '';
 
   constructor(apiKey?: string) {
-    this.apiKey = apiKey || '';
+    // Load from localStorage if no key provided
+    this.apiKey = apiKey || localStorage.getItem('googlePlacesApiKey') || '';
   }
 
   async searchRestaurants(food: string, postcode: string): Promise<any[]> {
@@ -16,10 +17,23 @@ class GooglePlacesService {
     }
 
     try {
+      console.log('Making Google Places API request...');
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(food + ' ' + postcode)}&key=${this.apiKey}`
+        `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(food + ' restaurant ' + postcode)}&key=${this.apiKey}`
       );
+      
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+      
       const data = await response.json();
+      console.log('Google Places API response:', data);
+      
+      if (data.status === 'REQUEST_DENIED') {
+        console.error('Google Places API request denied:', data.error_message);
+        return [];
+      }
+      
       return data.results || [];
     } catch (error) {
       console.error('Google Places API error:', error);
@@ -31,20 +45,21 @@ class GooglePlacesService {
 // Platform-specific URL builders
 class PlatformUrlBuilder {
   static buildUberEatsUrl(restaurantName: string, postcode: string): string {
-    const searchTerm = encodeURIComponent(`${restaurantName} ${postcode}`);
-    return `https://www.ubereats.com/gb/search?q=${searchTerm}`;
+    const searchTerm = encodeURIComponent(`${restaurantName}`);
+    const location = encodeURIComponent(postcode);
+    return `https://www.ubereats.com/gb/search?q=${searchTerm}&pl=${location}`;
   }
 
   static buildJustEatUrl(restaurantName: string, postcode: string): string {
     const searchTerm = encodeURIComponent(`${restaurantName}`);
     const location = encodeURIComponent(postcode);
-    return `https://www.just-eat.co.uk/restaurants-${searchTerm}-${location}`;
+    return `https://www.just-eat.co.uk/area/${location}/restaurants-${searchTerm}`;
   }
 
   static buildDeliverooUrl(restaurantName: string, postcode: string): string {
     const searchTerm = encodeURIComponent(`${restaurantName}`);
     const location = encodeURIComponent(postcode);
-    return `https://deliveroo.co.uk/restaurants/${location}/${searchTerm}`;
+    return `https://deliveroo.co.uk/restaurants/${location}?search=${searchTerm}`;
   }
 }
 
@@ -53,7 +68,15 @@ export class DeliveryApiService {
   private googlePlaces: GooglePlacesService;
 
   constructor(googleApiKey?: string) {
-    this.googlePlaces = new GooglePlacesService(googleApiKey);
+    // Always try to load from localStorage if no key provided
+    const apiKey = googleApiKey || localStorage.getItem('googlePlacesApiKey') || '';
+    this.googlePlaces = new GooglePlacesService(apiKey);
+    
+    if (apiKey) {
+      console.log('Using Google Places API key for restaurant search');
+    } else {
+      console.log('No Google Places API key found, will use fallback data');
+    }
   }
 
   async searchAllPlatforms(food: string, postcode: string): Promise<Restaurant[]> {
@@ -67,10 +90,11 @@ export class DeliveryApiService {
       return this.generateMockRestaurants(food);
     }
 
+    console.log(`Found ${googleResults.length} restaurants from Google Places`);
     const restaurants: Restaurant[] = [];
 
     // Process each restaurant and create entries for each platform
-    for (let i = 0; i < Math.min(googleResults.length, 3); i++) {
+    for (let i = 0; i < Math.min(googleResults.length, 5); i++) {
       const place = googleResults[i];
       const baseRestaurant = {
         name: place.name,
@@ -81,7 +105,7 @@ export class DeliveryApiService {
       // Create entries for each delivery platform
       const platforms: Array<'Uber Eats' | 'Just Eat' | 'Deliveroo'> = ['Uber Eats', 'Just Eat', 'Deliveroo'];
       
-      platforms.forEach((platform, platformIndex) => {
+      platforms.forEach((platform) => {
         restaurants.push({
           id: `${place.place_id}-${platform}`,
           ...baseRestaurant,
