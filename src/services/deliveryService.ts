@@ -3,21 +3,21 @@ import { Restaurant } from '@/types/restaurant';
 import { DeliveryApiService } from './apiService';
 
 export const searchDeliveryApps = async (food: string, postcode: string): Promise<Restaurant[]> => {
-  console.log(`Searching for real "${food}" restaurants in postcode "${postcode}"`);
+  console.log(`Searching for "${food}" restaurants in postcode "${postcode}" with optimized results`);
   
   try {
-    // Initialize the API service with Google Places key if available
+    // Initialize the API service
     const apiService = new DeliveryApiService();
     
-    // Search for real restaurants using Google Places API or web scraping
+    // Search for restaurants with deduplication and optimization
     const results = await apiService.searchAllPlatforms(food, postcode);
     
-    console.log(`Returning ${results.length} restaurant options`);
+    console.log(`Returning ${results.length} optimized restaurant options (no duplicates)`);
     return results;
   } catch (error) {
     console.error('Restaurant search failed completely:', error);
     
-    // Emergency fallback
+    // Emergency fallback with single restaurant
     return [
       {
         id: 'emergency-fallback',
