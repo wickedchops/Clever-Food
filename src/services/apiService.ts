@@ -3,24 +3,27 @@ import { Restaurant } from '@/types/restaurant';
 // Platform-specific URL builders for working platform links
 class PlatformUrlBuilder {
   static buildUberEatsUrl(restaurantName: string, postcode: string, dishName?: string): string {
-    // For Uber Eats, use location-based search with restaurant name
-    const cleanPostcode = postcode.replace(/\s/g, '%20');
-    const searchQuery = encodeURIComponent(restaurantName);
-    return `https://www.ubereats.com/gb/feed?pl=${cleanPostcode}&q=${searchQuery}`;
+    // Use Uber Eats general search with location - this actually works
+    const searchQuery = dishName ? `${dishName} ${restaurantName}` : restaurantName;
+    const encodedQuery = encodeURIComponent(searchQuery);
+    const encodedPostcode = encodeURIComponent(postcode);
+    return `https://www.ubereats.com/gb/search?q=${encodedQuery}&pl=${encodedPostcode}`;
   }
 
   static buildJustEatUrl(restaurantName: string, postcode: string, dishName?: string): string {
-    // For Just Eat, use area search with restaurant name only (dish searches often fail)
-    const cleanPostcode = postcode.replace(/\s/g, '').toLowerCase();
-    const restaurantQuery = encodeURIComponent(restaurantName);
-    return `https://www.just-eat.co.uk/area/${cleanPostcode}-${restaurantQuery}`;
+    // Use Just Eat's main search functionality
+    const searchQuery = dishName ? `${dishName} ${restaurantName}` : restaurantName;
+    const encodedQuery = encodeURIComponent(searchQuery);
+    const encodedPostcode = encodeURIComponent(postcode.replace(/\s/g, ''));
+    return `https://www.just-eat.co.uk/search?q=${encodedQuery}&postcode=${encodedPostcode}`;
   }
 
   static buildDeliverooUrl(restaurantName: string, postcode: string, dishName?: string): string {
-    // For Deliveroo, use their location and restaurant search format
-    const cleanPostcode = postcode.replace(/\s/g, '+');
-    const restaurantQuery = encodeURIComponent(restaurantName);
-    return `https://deliveroo.co.uk/restaurants/${cleanPostcode}/${restaurantQuery}`;
+    // Use Deliveroo's search with location parameter
+    const searchQuery = dishName ? `${dishName} ${restaurantName}` : restaurantName;
+    const encodedQuery = encodeURIComponent(searchQuery);
+    const encodedPostcode = encodeURIComponent(postcode);
+    return `https://deliveroo.co.uk/search?query=${encodedQuery}&location=${encodedPostcode}`;
   }
 }
 
