@@ -1,3 +1,4 @@
+
 import { Restaurant } from '@/types/restaurant';
 
 // Platform-specific URL builders for working platform links
@@ -50,11 +51,12 @@ export class DeliveryApiService {
           id: `${platform}-${index}`,
           name,
           cuisine: this.determineCuisineFromFood(food),
-          platform,
+          dishName: food,
           price: this.generateRealisticPrice(food),
           deliveryFee: this.getDeliveryFee(platform),
           deliveryTime: this.getDeliveryTime(platform),
           rating: 3.8 + Math.random() * 1.2,
+          platform,
           restaurantUrl: this.buildPlatformUrl(platform, name, postcode, food)
         };
         allOptions.push(restaurant);

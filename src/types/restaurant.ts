@@ -3,6 +3,7 @@ export interface Restaurant {
   id: string;
   name: string;
   cuisine: string;
+  dishName?: string;
   price: number;
   deliveryFee: number;
   deliveryTime: number;

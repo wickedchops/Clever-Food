@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import SearchForm from '@/components/SearchForm';
 import RestaurantResults from '@/components/RestaurantResults';
+import CurrySelection from '@/components/CurrySelection';
 import { searchDeliveryApps } from '@/services/deliveryService';
 import { Restaurant } from '@/types/restaurant';
 
@@ -9,8 +10,19 @@ const Index = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [showCurrySelection, setShowCurrySelection] = useState(false);
+  const [currentPostcode, setCurrentPostcode] = useState('');
 
   const handleSearch = async (food: string, postcode: string) => {
+    // Check if user searched for "curry" (case insensitive)
+    if (food.toLowerCase().trim() === 'curry') {
+      setShowCurrySelection(true);
+      setCurrentPostcode(postcode);
+      setHasSearched(false);
+      return;
+    }
+
+    setShowCurrySelection(false);
     setLoading(true);
     setHasSearched(true);
     
@@ -18,6 +30,22 @@ const Index = () => {
       // Simulate API delay for realistic experience
       await new Promise(resolve => setTimeout(resolve, 1500));
       const results = await searchDeliveryApps(food, postcode);
+      setRestaurants(results);
+    } catch (error) {
+      console.error('Search failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCurrySelect = async (curryType: string) => {
+    setShowCurrySelection(false);
+    setLoading(true);
+    setHasSearched(true);
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      const results = await searchDeliveryApps(curryType, currentPostcode);
       setRestaurants(results);
     } catch (error) {
       console.error('Search failed:', error);
@@ -46,6 +74,13 @@ const Index = () => {
         <div className="max-w-2xl mx-auto mb-12">
           <SearchForm onSearch={handleSearch} loading={loading} />
         </div>
+
+        {/* Curry Selection */}
+        {showCurrySelection && (
+          <div className="mb-12">
+            <CurrySelection onCurrySelect={handleCurrySelect} postcode={currentPostcode} />
+          </div>
+        )}
 
         {/* Results */}
         {hasSearched && (

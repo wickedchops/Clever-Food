@@ -53,6 +53,9 @@ const RestaurantCard = ({ restaurant, isCheapest }: RestaurantCardProps) => {
 
         {/* Restaurant Details */}
         <h3 className="text-xl font-bold text-gray-800 mb-2">{restaurant.name}</h3>
+        {restaurant.dishName && (
+          <p className="text-lg font-medium text-gray-700 mb-1">{restaurant.dishName}</p>
+        )}
         <p className="text-gray-600 mb-4">{restaurant.cuisine}</p>
 
         {/* Price and Delivery Info */}
