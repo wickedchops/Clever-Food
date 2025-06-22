@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import SearchForm from '@/components/SearchForm';
 import RestaurantResults from '@/components/RestaurantResults';
-import ApiSettings from '@/components/ApiSettings';
 import { searchDeliveryApps } from '@/services/deliveryService';
 import { Restaurant } from '@/types/restaurant';
 
@@ -16,7 +15,7 @@ const Index = () => {
     setHasSearched(true);
     
     try {
-      // Simulate API delay
+      // Simulate API delay for realistic experience
       await new Promise(resolve => setTimeout(resolve, 1500));
       const results = await searchDeliveryApps(food, postcode);
       setRestaurants(results);
@@ -38,6 +37,9 @@ const Index = () => {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Compare prices across Uber Eats, Just Eat, and Deliveroo to find the best deals on your favorite dishes
           </p>
+          <p className="text-sm text-gray-500 mt-2">
+            Demo app using sample data for illustration purposes
+          </p>
         </div>
 
         {/* Search Form */}
@@ -52,9 +54,6 @@ const Index = () => {
           </div>
         )}
       </div>
-
-      {/* API Settings */}
-      <ApiSettings />
     </div>
   );
 };
