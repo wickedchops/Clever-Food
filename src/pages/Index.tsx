@@ -129,12 +129,12 @@ const Index = () => {
   const currentCategory = foodCategories[currentFoodCategory as keyof typeof foodCategories];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div className="min-h-screen bg-gray-100">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-4">
-            FoodFinder
+            Clever Food
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Compare prices across Uber Eats, Just Eat, and Deliveroo to find the best deals on your favorite dishes
