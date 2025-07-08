@@ -1,4 +1,5 @@
 
+
 # Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
@@ -36,11 +37,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci
+        run: npm install
       
       - name: Build
         run: npm run build
@@ -57,3 +58,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
